@@ -5,10 +5,12 @@
   "version": "1.0.1",
   "files": [
     "tagsinput.js",
-    "tagsinput.css"
+    "tagsinput.css",
+    "tagsinput.scss",
   ],
   "main": "tagsinput.js",
   "style": "tagsinput.css",
+  "sass" : "tagsinput.scss",
   "repository":
     {
       "type": "git",
