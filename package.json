@@ -11,11 +11,6 @@
   "main": "tagsinput.js",
   "style": "tagsinput.css",
   "sass" : "tagsinput.scss",
-  "repository":
-    {
-      "type": "git",
-      "url": "https://github.com/syahrul84/bootstrap4-tagsinput.git"
-    },
-   "license": "MIT",
+  "license": "MIT",
   "homepage": "https://github.com/syahrul84/bootstrap4-tagsinput"
 }
