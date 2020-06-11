@@ -123,13 +123,13 @@
 
               // Ignore items allready added
               var existing = $.grep(self.itemsArray, function(item) {
-                  return self.options.itemValue(item) === itemValue;
+                  return self.options.itemValue(item).toLowerCase() === itemValue.toLowerCase();
               })[0];
               if (existing && !self.options.allowDuplicates) {
                   // Invoke onTagExists
                   if (self.options.onTagExists) {
                       var $existingTag = $(".badge", self.$container).filter(function() {
-                          return $(this).data("item") === existing;
+                          return $(this).data("item").toLowerCase() === existing.toLowerCase();
                       });
                       self.options.onTagExists(item, $existingTag);
                   }
