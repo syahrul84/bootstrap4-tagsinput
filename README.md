@@ -1,6 +1,10 @@
 # Bootstrap Tags Input
 Bootstrap Tags Input is a jQuery plugin providing a Twitter Bootstrap user interface for managing tags.
 
+## Installation
+
+npm install syahrul84/bootstrap4-tagsinput
+
 ## Usage
 Examples:-
 
