@@ -1,6 +1,6 @@
   /*
    * bootstrap-tagsinput v0.8.0
-   * 
+   *
    */
   (function($) {
       "use strict";
@@ -50,10 +50,17 @@
           this.multiple = (this.isSelect && element.hasAttribute('multiple'));
           this.objectItems = options && options.itemValue;
           this.placeholderText = element.hasAttribute('placeholder') ? this.$element.attr('placeholder') : '';
-          this.inputSize = Math.max(1, this.placeholderText.length);
+          this.taglists = element.hasAttribute('tags') ? $.parseJSON(this.$element.attr('tags')) : [];
+          this.inputSize = Math.max(10, this.placeholderText.length);
+
+          this.tags = '';
+          for (var i = 0; i < this.taglists.length; ++i) {
+              this.tags += '<option>' + this.taglists[i] + '</option>';
+          }
 
           this.$container = $('<div class="bootstrap-tagsinput"></div>');
-          this.$input = $('<input type="text" placeholder="' + this.placeholderText + '"/>').appendTo(this.$container);
+          this.$input = $('<input list="_tags_lists" autocomplete=off type="text" placeholder="' + this.placeholderText + '"/>').appendTo(this.$container);
+          this.$tags = $('<datalist id="_tags_lists">' + this.tags + '</datalist>').appendTo(this.$container);
 
           this.$element.before(this.$container);
 
@@ -326,87 +333,6 @@
               makeOptionItemFunction(self.options, 'itemText');
               makeOptionFunction(self.options, 'tagClass');
 
-              // Typeahead Bootstrap version 2.3.2
-              if (self.options.typeahead) {
-                  var typeahead = self.options.typeahead || {};
-
-                  makeOptionFunction(typeahead, 'source');
-
-                  self.$input.typeahead($.extend({}, typeahead, {
-                      source: function(query, process) {
-                          function processItems(items) {
-                              var texts = [];
-
-                              for (var i = 0; i < items.length; i++) {
-                                  var text = self.options.itemText(items[i]);
-                                  map[text] = items[i];
-                                  texts.push(text);
-                              }
-                              process(texts);
-                          }
-
-                          this.map = {};
-                          var map = this.map,
-                              data = typeahead.source(query);
-
-                          if ($.isFunction(data.success)) {
-                              // support for Angular callbacks
-                              data.success(processItems);
-                          } else if ($.isFunction(data.then)) {
-                              // support for Angular promises
-                              data.then(processItems);
-                          } else {
-                              // support for functions and jquery promises
-                              $.when(data)
-                                  .then(processItems);
-                          }
-                      },
-                      updater: function(text) {
-                          self.add(this.map[text]);
-                          return this.map[text];
-                      },
-                      matcher: function(text) {
-                          return (text.toLowerCase().indexOf(this.query.trim().toLowerCase()) !== -1);
-                      },
-                      sorter: function(texts) {
-                          return texts.sort();
-                      },
-                      highlighter: function(text) {
-                          var regex = new RegExp('(' + this.query + ')', 'gi');
-                          return text.replace(regex, "<strong>$1</strong>");
-                      }
-                  }));
-              }
-
-              // typeahead.js
-              if (self.options.typeaheadjs) {
-                  // Determine if main configurations were passed or simply a dataset
-                  var typeaheadjs = self.options.typeaheadjs;
-                  if (!$.isArray(typeaheadjs)) {
-                      typeaheadjs = [null, typeaheadjs];
-                  }
-
-                  $.fn.typeahead.apply(self.$input, typeaheadjs).on('typeahead:selected', $.proxy(function(obj, datum, name) {
-                      var index = 0;
-                      typeaheadjs.some(function(dataset, _index) {
-                          if (dataset.name === name) {
-                              index = _index;
-                              return true;
-                          }
-                          return false;
-                      });
-
-                      // @TODO Dep: https://github.com/corejavascript/typeahead.js/issues/89
-                      if (typeaheadjs[index].valueKey) {
-                          self.add(datum[typeaheadjs[index].valueKey]);
-                      } else {
-                          self.add(datum);
-                      }
-
-                      self.$input.typeahead('val', '');
-                  }, self));
-              }
-
               self.$container.on('click', $.proxy(function(event) {
                   if (!self.$element.attr('disabled')) {
                       self.$input.removeAttr('disabled');
@@ -493,8 +419,8 @@
                   // Reset internal input's size
                   var textLength = $input.val().length,
                       wordSpace = Math.ceil(textLength / 5),
-                      size = textLength + wordSpace + 1;
-                  $input.attr('size', Math.max(this.inputSize, size));
+                      size = textLength + wordSpace;
+                  $input.attr('size', Math.max(this.inputSize, size) + 10);
               }, self));
 
               self.$container.on('keypress', 'input', $.proxy(function(event) {
@@ -524,7 +450,7 @@
                   var textLength = $input.val().length,
                       wordSpace = Math.ceil(textLength / 5),
                       size = textLength + wordSpace + 1;
-                  $input.attr('size', Math.max(this.inputSize, size));
+                  $input.attr('size', Math.max(this.inputSize, size) + 10);
               }, self));
 
               // Remove icon clicked
